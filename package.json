@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./src/index.js",
-    "dev": "env-cmd ./config/dev.env nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "env-cmd -f ./config/dev.env nodemon --inspect  src/index.js",
+    "debug": "env-cmd -f ./config/dev.env node --inspect  src/index.js",
+    "test": "env-cmd -f ./config/test.env mocha"
   },
   "author": "Nicolas Ortiz",
   "license": "ISC",
@@ -17,6 +18,10 @@
     "validator": "^11.1.0"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "env-cmd": "^9.0.3",
+    "mocha": "^6.2.0",
     "nodemon": "^1.19.1"
   }
 }

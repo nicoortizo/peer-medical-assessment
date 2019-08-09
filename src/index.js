@@ -1,7 +1,5 @@
-require('./db/mongoose');
 const app = require('./app');
-const port = process.env.PORT || 3000;
-
-app.listen(port, () => {
-    console.log('server is up on port ' + port);
+const config = require('./config/config');
+app.listen(config.port, () => {
+    console.log('server is up on port ' + config.port);
 })

@@ -17,18 +17,7 @@ const userSchema = new mongoose.Schema({
                 throw new Error('Url avatar is invalid');
             }
         }
-    }//,
-    // email: {
-    //     type:String,
-    //     required:true,
-    //     trim:true,
-    //     lowercase:true,
-    //     validate(value) {
-    //         if(!validator.isEmail(value)){
-    //             throw new Error('Email is invalid');
-    //         }
-    //     }
-    // }
+    }
 }, 
 {
     timestamps:true
