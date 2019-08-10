@@ -25,7 +25,7 @@ router.patch('/articles/:id',auth, async (req,res) => {
     const allowedUpdates = ['title','text','tags'];
 
     if(!fieldsToUpdate.every((field) => allowedUpdates.includes(field))) {
-        return res.status(400).send({error})
+        return res.status(400).send('Invalid properties to update');
     }
 
     try {
