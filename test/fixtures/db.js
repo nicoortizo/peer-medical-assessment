@@ -25,15 +25,15 @@ const article1 = new Article({
 
 const article2 = new Article({
     userId: _idUser1,
-	title:"article1",
+	title:"article2",
 	text:"article text 1",
 	tags:["article","second","tag"]
 });
 
 const article3 = new Article({
     userId: _idUser2,
-	title:"article1",
-	text:"article text 1",
+	title:"article3",
+	text:"article text 3",
 	tags:["article","art","tag"]
 });
 

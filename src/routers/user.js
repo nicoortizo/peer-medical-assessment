@@ -2,16 +2,16 @@
 const express = require('express');
 const User = require('../models/user');
 const auth = require('../middlewares/auth');
+const userHandler = require('../domain/user-handler')
 
 const router = new express.Router();
 
 router.post('/users',auth, async (req, res) => {
-    const user = new User(req.body);
     try {
-        await user.save();
+        user = await userHandler.createUser(req.body);
         return res.status(201).send({user});
-    } catch(error) {
-        return res.status(400).send(error);
+    } catch(err) {
+        return res.status(400).send(err);
     }
 });
 
@@ -27,7 +27,7 @@ router.get('/users',auth, async (req, res) => {
     catch (error){
         return res.status(500);
     }
-})
+});
 
 router.get('/users/:id', async (req, res) => {
     const id = req.params.id;
@@ -42,6 +42,6 @@ router.get('/users/:id', async (req, res) => {
     catch (error){
         return res.status(500);
     }
-})
+});
 
 module.exports = router;

@@ -156,5 +156,28 @@ describe('Article endpoints', () => {
                 })
         } );
 
-    })
+    });
+
+    describe('Delete Article', () => {
+        it('Delete article should get 200', (done) => {
+            chai.request(app)
+                .delete('/articles/'+ db.article3._id)
+                .set('Authorization', 'Bearer ' + token)
+                .end((err,res) => {
+                    expect(res).to.have.status(200);
+                    done();
+                })
+        }) ;
+
+        it('Delete invalid article id should get 404 not found ', (done) => {
+            chai.request(app)
+                .delete('/articles/'+ new mongoose.Types.ObjectId())
+                .set('Authorization', 'Bearer ' + token)
+                .end((err,res) => {
+                    expect(res).to.have.status(404);
+                    done();
+                })
+        }) ;
+
+    });
 });

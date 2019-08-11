@@ -2,40 +2,30 @@ const express = require('express');
 const Article = require('../models/article');
 const mongoose = require('mongoose');
 const auth = require('../middlewares/auth');
+const articleHandler = require('../domain/article-handler')
 
 const router = new express.Router();
 
-router.post('/articles', auth, async(req, res) => {
-    if(!req.body) return res.status(400).send('Bad Request');
-    
-    const article = new Article(req.body);
-    
+
+router.post('/articles', auth, async(req, res) => {    
     try {
-        await article.save();
-        res.status(201).send(article);
+        if(!req.body) return res.status(400).send('Bad Request');
+        const newArticle =  await articleHandler.createArticle(req.body);
+        res.status(201).send(newArticle);
     } catch(error)  {
         return res.status(400).send(error);
     }
 })
 
 router.patch('/articles/:id',auth, async (req,res) => {
-    if(!req.body) return res.status(400).send('Bad Request');
-
-    const fieldsToUpdate = Object.keys(req.body);
-    const allowedUpdates = ['title','text','tags'];
-
-    if(!fieldsToUpdate.every((field) => allowedUpdates.includes(field))) {
-        return res.status(400).send('Invalid properties to update');
-    }
-
     try {
-        const article = await Article.findById(req.params.id); 
-        if(!article) {
-            return res.status(404).send('Article Not Found');
+        if(!req.body) return res.status(400).send('Bad Request'); 
+        
+        const articleUpdated = await articleHandler.updateArticle(req.params.id,req.body);
+        if(!articleUpdated) {
+            return res.status(404).send('article not found');
         }
-        fieldsToUpdate.forEach((field) => article[field]= req.body[field]);
-        await article.save();
-        res.send(article);
+        res.send(articleUpdated);
     } catch(error) {
         return res.status(400).send(error);
     }
@@ -43,25 +33,22 @@ router.patch('/articles/:id',auth, async (req,res) => {
 
 
 router.delete('/articles/:id',auth, async (req, res) => {
-        try {
-        if(!mongoose.Types.ObjectId.isValid(req.params.id)){
-            return res.send(400).send("invalid Object Id");
-        }
-        const article = await Article.findByIdAndDelete(req.params.id);
+    try {
+        const article = await articleHandler.deleteArticle(req.params.id)
         if(!article)
-            return res.status(404).send();
+            return res.status(404).send('article not found');
 
         res.send(article);
 
     }catch(error) {
         return res.status(500).send(error);
     }
-})
+});
+
 
 router.get('/articles/:id',auth, async (req, res) => {
-    const id = req.params.id;
-
     try {
+        const id = req.params.id;
         const article = await Article.findById(id);
         if(!article)
             return res.status(404).send();
@@ -74,13 +61,12 @@ router.get('/articles/:id',auth, async (req, res) => {
 })
 
 router.get('/articles',auth, async (req, res) => {
-    const query = {};
-    
-    if(req.query.tags ) {
-        query.tags = { $in : req.query.tags.split(',')};
-    }
-
     try {
+        const query = {};
+        
+        if(req.query.tags ) {
+            query.tags = { $in : req.query.tags.split(',')};
+        }
         const articles = await Article.find(query);
         if(!articles)
         {
